@@ -10,11 +10,12 @@ print("training on: " + device.type)
 
 
 class ModelCNN(nn.Module):
-    def __init__(self, data, lr=1e-3, max_epoch=300):
+    def __init__(self, data, plotter=None, lr=1e-3, max_epoch=300):
         nn.Module.__init__(self)
 
         self.lr = lr
         self.max_epoch = max_epoch
+        self.plotter = plotter
 
         self.train_set = data['train']
         self.val_set = data['validation']
@@ -49,6 +50,9 @@ class ModelCNN(nn.Module):
         return torch.stack(y_pred)
 
     def train(self):
+        if self.plotter == None:
+            raise RuntimeWarning("Plotter not defined.")
+
         optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
         loss_func = nn.MSELoss()
 
@@ -67,6 +71,10 @@ class ModelCNN(nn.Module):
 
             train_loss = loss.item()
             val_loss = self.validate()
+            
+            if self.plotter:
+                self.plotter.train_loss.append(train_loss)
+                self.plotter.val_loss.append(val_loss)
 
             training_progressbar(epoch, self.max_epoch, round(train_loss, 3))
 
