@@ -9,7 +9,9 @@ if __name__ == '__main__':
     dataset = DatasetLoader('./data/img_align_celeba/', total_num=100, seed=SEED)
     dataset.load()
     
-    model = ModelCNN() 
-    model.train(dataset.data)
+    model = ModelCNN(dataset.data) 
+    model.train()
+    
+    print("Test Accuracy:", model.test())
     
     
