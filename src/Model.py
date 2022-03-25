@@ -6,7 +6,6 @@ from sklearn.metrics import mean_squared_error
 from src.util import training_progressbar
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-print("training on: " + device.type)
 
 
 class ModelCNN(nn.Module):
@@ -46,7 +45,7 @@ class ModelCNN(nn.Module):
 
     def forward_all(self, Xs):
         '''Wrapper for Full batch Forward propagation'''
-        y_pred = [self.forward(X) for X in Xs]
+        y_pred = [self.forward(X.to(device)) for X in Xs]
         return torch.stack(y_pred)
 
     def train(self):
@@ -56,8 +55,7 @@ class ModelCNN(nn.Module):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
         loss_func = nn.MSELoss()
 
-        y_train = torch.FloatTensor(self.train_set['y']).unsqueeze(1)
-        y_val = torch.FloatTensor(self.val_set['y']).unsqueeze(1)
+        y_train = torch.FloatTensor(self.train_set['y']).unsqueeze(1).to(device)
 
         print("Start Training.")
         for epoch in range(self.max_epoch):
@@ -82,11 +80,10 @@ class ModelCNN(nn.Module):
         y_val = torch.FloatTensor(self.val_set['y']).unsqueeze(1)
 
         with torch.no_grad():
-            y_pred = [self.forward(X) for X in self.val_set['X']]
-            y_pred = self.forward_all(self.val_set['X']).detach().numpy()
+            y_pred = self.forward_all(self.val_set['X']).cpu().detach().numpy()
             return mean_squared_error(y_val, y_pred)
 
     def test(self):
         y_test = torch.FloatTensor(self.test_set['y']).unsqueeze(1)
-        y_pred = self.forward_all(self.test_set['X']).detach().numpy()
+        y_pred = self.forward_all(self.test_set['X']).cpu().detach().numpy()
         return mean_squared_error(y_test, y_pred)
