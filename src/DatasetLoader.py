@@ -14,13 +14,15 @@ class DatasetLoader:
         self.cap = total_num
         self.test_size = test_size
         self.val_size = validation_size
-        self.seed = 123
+        self.seed = seed
 
         self.data = {}
 
     def load(self):
         print('Loading Data from', self.dir)
         images, labels = [], []
+        np.random.seed(self.seed)
+         
         for file in os.listdir(self.dir):
             img = torch.FloatTensor(self.load_img(file))
             # reshape into (Channel, Height, Weight) as torch required

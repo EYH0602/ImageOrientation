@@ -1,15 +1,15 @@
 from src.DatasetLoader import DatasetLoader
+from src.Model import ModelCNN
 import matplotlib.pyplot as plt
+import numpy as np
 
 if __name__ == '__main__':
-    dataset = DatasetLoader('./data/img_align_celeba/', total_num=10)
+    SEED = 1
+    np.random.seed(SEED)
+    dataset = DatasetLoader('./data/img_align_celeba/', total_num=100, seed=SEED)
     dataset.load()
     
-    train = dataset.data['train']
-    
-    print(train['X'][0].shape)
-    print(train['y'][0])
-    p = plt.imshow(train['X'][0].squeeze(0).permute(1,2,0))
-    plt.show()
+    model = ModelCNN() 
+    model.train(dataset.data)
     
     
