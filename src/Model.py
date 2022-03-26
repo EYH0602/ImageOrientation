@@ -25,6 +25,8 @@ class ModelCNN(nn.Module):
         self.pool1 = nn.MaxPool2d(2)
         self.conv2 = nn.Conv2d(3, 6, 5)
         self.pool2 = nn.MaxPool2d(2)
+        
+        self.dropout = nn.Dropout(0.4)
 
         # FC layers
         self.fc1 = nn.Linear(5046, 120)
@@ -40,6 +42,7 @@ class ModelCNN(nn.Module):
         # FC layers
         h = torch.flatten(h)
         h = self.act1(self.fc1(h))
+        h = self.dropout(h)
         y_pred = self.fc2(h)
         return y_pred
 

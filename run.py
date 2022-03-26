@@ -10,16 +10,13 @@ if __name__ == '__main__':
     SEED = 1
     np.random.seed(SEED)
     torch.manual_seed(SEED)
-    # dataset = DatasetLoader('./data/img_align_celeba/', total_num=100, seed=SEED)
-    # dataset.load()
-    f = open('save/data.pkl', 'rb')
-    dataset = pickle.load(f)
-    f.close()
+    dataset = DatasetLoader('./data/img_align_celeba/', total_num=20000, seed=SEED)
+    dataset.load()
     
     
-    plotter = Plotter("Oritentation Detection Plot", "CNNRegression.png", plot_acc=False)
+    plotter = Plotter("Orientation Detection Plot", "CNNRegression.png", plot_acc=False)
     
-    model = ModelCNN(dataset.data, plotter)
+    model = ModelCNN(dataset.data, plotter, max_epoch=500)
     if torch.cuda.is_available():
         print("training on: cuda")
         model = model.cuda()
@@ -28,5 +25,5 @@ if __name__ == '__main__':
     
     print("Test Accuracy:", model.test())
     plotter.plot()
-    
-    
+    torch.save(model.state_dict(), "./result/state_dict.pt")
+
