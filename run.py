@@ -25,5 +25,6 @@ if __name__ == '__main__':
     
     print("Test Accuracy:", model.test())
     plotter.plot()
-    torch.save(model.state_dict(), "./result/state_dict.pt")
+
+    print(model.predict(dataset.data['test']['X'][0]))
 

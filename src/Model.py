@@ -90,3 +90,6 @@ class ModelCNN(nn.Module):
         y_test = torch.FloatTensor(self.test_set['y']).unsqueeze(1)
         y_pred = self.forward_all(self.test_set['X']).cpu().detach().numpy()
         return mean_squared_error(y_test, y_pred)
+    
+    def predict(self, img):
+        return self.forward(img.to(device)).cpu().detach().numpy()[0]
